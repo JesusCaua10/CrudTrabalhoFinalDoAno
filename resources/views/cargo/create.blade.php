@@ -1,39 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo Cargo - GestorFlex</title>
-    <style>
-        body { font-family: "Poppins", sans-serif; background: #f3f4f6; padding: 30px; }
-        .container { background: white; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input, select { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        button { margin-top: 20px; padding: 10px 16px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        a { text-decoration: none; color: #007bff; }
-    </style>
+    <title>Novo Cargo</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
 <div class="container">
-    <h2>Cadastrar Novo Cargo</h2>
+    <h1>Novo Cargo</h1>
+
+    @if ($errors->any())
+        <div class="alert">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form action="{{ route('cargo.store') }}" method="POST">
         @csrf
-        <label>Nome do Cargo</label>
-        <input type="text" name="nome" required>
-
-        <label>Salário Base</label>
-        <input type="number" name="salario_base" step="0.01" required>
-
-        <label>Nível de Acesso</label>
-        <select name="nivel_acesso" required>
-            <option value="usuario">Usuário</option>
-            <option value="admin">Administrador</option>
+        <input type="text" name="nome" placeholder="Nome do Cargo" value="{{ old('nome') }}">
+        <input type="number" step="0.01" name="salario_base" placeholder="Salário Base" value="{{ old('salario_base') }}">
+        <select name="nivel_acesso">
+            <option value="usuario" {{ old('nivel_acesso')=='usuario'?'selected':'' }}>Usuário</option>
+            <option value="admin" {{ old('nivel_acesso')=='admin'?'selected':'' }}>Administrador</option>
         </select>
-
         <button type="submit">Salvar</button>
     </form>
-
-    <p><a href="{{ route('cargo.index') }}">← Voltar à lista</a></p>
+    <a href="{{ route('cargo.index') }}" class="button">Voltar</a>
 </div>
 </body>
 </html>
