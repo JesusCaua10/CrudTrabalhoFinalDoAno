@@ -20,57 +20,62 @@ class FolhaDePagaController extends Controller
         return view('folhadepaga.create', compact('funcionarios'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
-        
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'salario_bruto' => 'required|numeric|min:0',
-            'descontos' => 'required|numeric|min:0',
-            'data_pagamento' => 'required|date',
-        ]);
+    $request->validate([
+        'funcionario_id' => 'required|exists:funcionarios,id',
+        'salario_bruto' => 'required|numeric|min:0',
+        'descontos' => 'required|numeric|min:0',
+        'data_pagamento' => 'required|date',
+    ]);
 
-        FolhaDePaga::create([
-            'funcionario_id' => $request->funcionario_id,
-            'salario_bruto' => $request->salario_bruto,
-            'descontos' => $request->descontos,
-            'salario_liquido' => $request->salario_bruto - $request->descontos,
-            'data_pagamento' => $request->data_pagamento,
-        ]);
+    $salarioLiquido = $request->salario_bruto - $request->descontos;
 
-        return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento criada com sucesso!');
+    FolhaDePaga::create([
+        'funcionario_id' => $request->funcionario_id,
+        'salario_bruto' => $request->salario_bruto,
+        'descontos' => $request->descontos,
+        'salario_liquido' => $salarioLiquido,
+        'data_pagamento' => $request->data_pagamento,
+    ]);
 
+    return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento criada com sucesso!');
     }
 
-    public function show(FolhaDePaga $folha)
+    public function show(FolhaDePaga $folhadepaga)
     {
-        
+        return view('folhadepaga.show', ['folha' => $folhadepaga]);
     }
 
-    public function edit(FolhaDePaga $folha)
+    public function edit(FolhaDePaga $folhadepaga)
     {
         $funcionarios = Funcionario::all();
-        return view('folhadepaga.edit', compact('folha', 'funcionarios'));
+        // Passa $folhadepaga como $folha para a view
+        return view('folhadepaga.edit', ['folha' => $folhadepaga, 'funcionarios' => $funcionarios]);
     }
 
-    public function update(Request $request, FolhaDePaga $folha)
+    public function update(Request $request, FolhaDePaga $folhadepaga)
     {
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'data_pagamento' => 'required|date',
-            'salario_bruto' => 'required|numeric',
-            'descontos' => 'nullable|numeric',
-            'salario_liquido' => 'required|numeric',
-        ]);
+    $request->validate([
+        'funcionario_id' => 'required|exists:funcionarios,id',
+        'data_pagamento' => 'required|date',
+        'salario_bruto' => 'required|numeric',
+        'descontos' => 'nullable|numeric',
+    ]);
 
-        $folha->update($request->all());
+    $folhadepaga->update([
+        'funcionario_id' => $request->funcionario_id,
+        'salario_bruto' => $request->salario_bruto,
+        'descontos' => $request->descontos,
+        'salario_liquido' => $request->salario_bruto - $request->descontos,
+        'data_pagamento' => $request->data_pagamento,
+    ]);
 
-        return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento atualizada com sucesso!');
+    return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento atualizada com sucesso!');
     }
-
-    public function destroy(FolhaDePaga $folha)
+    public function destroy(FolhaDePaga $folhadepaga)
     {
-        $folha->delete();
+        $folhadepaga->delete();
         return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento deletada com sucesso!');
     }
 }

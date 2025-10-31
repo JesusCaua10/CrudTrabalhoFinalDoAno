@@ -1,98 +1,86 @@
-<?php
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Folha de Pagamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
 
-namespace App\Http\Controllers;
+<div class="container mx-auto max-w-lg bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">Editar Folha de Pagamento</h2>
 
-use Illuminate\Http\Request;
-use App\Models\FolhaDePaga;
-use App\Models\Funcionario;
+    @if ($errors->any())
+        <div class="mb-4 p-2 bg-red-200 text-red-800 rounded">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-class FolhaDePagaController extends Controller
-{
-    /**
-     * Exibe a lista de folhas de pagamento.
-     */
-    public function index()
-    {
-        $folhas = FolhaDePaga::with('funcionario')->get();
-        return view('folhadepaga.index', compact('folhas'));
+    <form action="{{ route('folhadepaga.update', $folha->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="mb-4">
+            <label for="funcionario_id" class="block font-medium text-gray-700">Funcionário</label>
+            <select name="funcionario_id" id="funcionario_id" required
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                @foreach($funcionarios as $funcionario)
+                    <option value="{{ $funcionario->id }}" {{ $funcionario->id == $folha->funcionario_id ? 'selected' : '' }}>
+                        {{ $funcionario->nome }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="salario_bruto" class="block font-medium text-gray-700">Salário Bruto</label>
+            <input type="number" name="salario_bruto" id="salario_bruto" step="0.01" value="{{ $folha->salario_bruto }}" required
+                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+
+        <div class="mb-4">
+            <label for="descontos" class="block font-medium text-gray-700">Descontos</label>
+            <input type="number" name="descontos" id="descontos" step="0.01" value="{{ $folha->descontos }}" required
+                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+
+        <div class="mb-4">
+            <label for="salario_liquido" class="block font-medium text-gray-700">Salário Líquido</label>
+            <input type="number" id="salario_liquido" step="0.01" value="{{ $folha->salario_liquido }}" readonly
+                   class="mt-1 block w-full border-gray-300 rounded-md bg-gray-100 cursor-not-allowed">
+        </div>
+
+        <div class="mb-4">
+            <label for="data_pagamento" class="block font-medium text-gray-700">Data de Pagamento</label>
+            <input type="date" name="data_pagamento" id="data_pagamento" value="{{ $folha->data_pagamento }}" required
+                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        </div>
+
+        <div class="flex gap-4">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Atualizar</button>
+            <a href="{{ route('folhadepaga.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition">← Voltar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const bruto = document.getElementById('salario_bruto');
+    const descontos = document.getElementById('descontos');
+    const liquido = document.getElementById('salario_liquido');
+
+    function calcularLiquido() {
+        const b = parseFloat(bruto.value) || 0;
+        const d = parseFloat(descontos.value) || 0;
+        liquido.value = (b - d).toFixed(2);
     }
 
-    /**
-     * Exibe o formulário de criação.
-     */
-    public function create()
-    {
-        $funcionarios = Funcionario::all();
-        return view('folhadepaga.create', compact('funcionarios'));
-    }
+    bruto.addEventListener('input', calcularLiquido);
+    descontos.addEventListener('input', calcularLiquido);
+</script>
 
-    /**
-     * Armazena uma nova folha de pagamento no banco.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'salario_bruto' => 'required|numeric|min:0',
-            'descontos' => 'required|numeric|min:0',
-            'data_pagamento' => 'required|date',
-        ]);
-
-        $salario_liquido = $request->salario_bruto - $request->descontos;
-
-        FolhaDePaga::create([
-            'funcionario_id' => $request->funcionario_id,
-            'salario_bruto' => $request->salario_bruto,
-            'descontos' => $request->descontos,
-            'salario_liquido' => $salario_liquido,
-            'data_pagamento' => $request->data_pagamento,
-        ]);
-
-        return redirect()->route('folhadepaga.index')->with('success', 'Folha de pagamento criada com sucesso!');
-    }
-
-    /**
-     * Exibe o formulário de edição.
-     */
-    public function edit($id)
-    {
-        $folha = FolhaDePaga::findOrFail($id);
-        $funcionarios = Funcionario::all();
-        return view('folhadepaga.edit', compact('folha', 'funcionarios'));
-    }
-
-    /**
-     * Atualiza uma folha de pagamento existente.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'salario_bruto' => 'required|numeric|min:0',
-            'descontos' => 'required|numeric|min:0',
-            'data_pagamento' => 'required|date',
-        ]);
-
-        $folha = FolhaDePaga::findOrFail($id);
-        $folha->update([
-            'funcionario_id' => $request->funcionario_id,
-            'salario_bruto' => $request->salario_bruto,
-            'descontos' => $request->descontos,
-            'salario_liquido' => $request->salario_bruto - $request->descontos,
-            'data_pagamento' => $request->data_pagamento,
-        ]);
-
-        return redirect()->route('folhadepaga.index')->with('success', 'Folha atualizada com sucesso!');
-    }
-
-    /**
-     * Exclui uma folha de pagamento.
-     */
-    public function destroy($id)
-    {
-        $folha = FolhaDePaga::findOrFail($id);
-        $folha->delete();
-
-        return redirect()->route('folhadepaga.index')->with('success', 'Folha excluída com sucesso!');
-    }
-}
+</body>
+</html>

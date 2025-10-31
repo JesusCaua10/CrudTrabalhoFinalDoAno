@@ -9,8 +9,8 @@ class CargoController extends Controller
 {
     public function index()
     {
-        $cargo = Cargo::all();
-        return view('cargo.index', compact('cargo'));
+        $cargos = Cargo::all();
+        return view('cargo.index', compact('cargos'));
     }
 
     public function create()
@@ -21,19 +21,16 @@ class CargoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:100',
-            'salario_base' => 'required|numeric',
-            'nivel_acesso' => 'required|in:admin,usuario',
+            'nome' => 'required|string|max:255',
+            'salario' => 'required|numeric|min:0',
         ]);
 
-        Cargo::create($request->all());
+        Cargo::create([
+            'nome' => $request->nome,
+            'salario' => $request->salario,
+        ]);
 
         return redirect()->route('cargo.index')->with('success', 'Cargo criado com sucesso!');
-    }
-
-    public function show(Cargo $cargo)
-    {
-        
     }
 
     public function edit(Cargo $cargo)
@@ -44,12 +41,14 @@ class CargoController extends Controller
     public function update(Request $request, Cargo $cargo)
     {
         $request->validate([
-            'nome' => 'required|string|max:100',
-            'salario_base' => 'required|numeric',
-            'nivel_acesso' => 'required|in:admin,usuario',
+            'nome' => 'required|string|max:255',
+            'salario' => 'required|numeric|min:0',
         ]);
 
-        $cargo->update($request->all());
+        $cargo->update([
+            'nome' => $request->nome,
+            'salario' => $request->salario,
+        ]);
 
         return redirect()->route('cargo.index')->with('success', 'Cargo atualizado com sucesso!');
     }

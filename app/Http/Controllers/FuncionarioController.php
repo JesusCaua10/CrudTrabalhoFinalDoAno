@@ -11,52 +11,51 @@ class FuncionarioController extends Controller
     public function index()
     {
         $funcionarios = Funcionario::with('cargo')->get();
-        return view('funcionarios.index', compact('funcionarios'));
+        return view('funcionario.index', compact('funcionarios'));
     }
 
     public function create()
     {
         $cargos = Cargo::all();
-        return view('funcionarios.create', compact('cargos'));
+        return view('funcionario.create', compact('cargos'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:150',
+            'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:funcionarios,email',
-            'telefone' => 'nullable|string|max:20',
             'cargo_id' => 'required|exists:cargos,id',
-            'data_admissao' => 'nullable|date',
         ]);
 
-        Funcionario::create($request->all());
+        Funcionario::create([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'cargo_id' => $request->cargo_id,
+        ]);
 
         return redirect()->route('funcionario.index')->with('success', 'Funcionário criado com sucesso!');
-    }
-
-    public function show(Funcionario $funcionario)
-    {
-        
     }
 
     public function edit(Funcionario $funcionario)
     {
         $cargos = Cargo::all();
-        return view('funcionarios.edit', compact('funcionario', 'cargos'));
+        return view('funcionario.edit', compact('funcionario', 'cargos'));
     }
 
     public function update(Request $request, Funcionario $funcionario)
     {
         $request->validate([
-            'nome' => 'required|string|max:150',
+            'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:funcionarios,email,' . $funcionario->id,
-            'telefone' => 'nullable|string|max:20',
             'cargo_id' => 'required|exists:cargos,id',
-            'data_admissao' => 'nullable|date',
         ]);
 
-        $funcionario->update($request->all());
+        $funcionario->update([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'cargo_id' => $request->cargo_id,
+        ]);
 
         return redirect()->route('funcionario.index')->with('success', 'Funcionário atualizado com sucesso!');
     }
