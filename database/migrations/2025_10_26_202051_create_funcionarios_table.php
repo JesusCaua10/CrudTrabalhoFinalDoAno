@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome', 150);
             $table->string('email', 100)->unique();
-            $table->string('telefone', 20)->nullable();
+            $table->decimal('salario', 10, 2)->nullable();
             $table->unsignedBigInteger('cargo_id');
             $table->date('data_admissao')->nullable();
             $table->timestamps();

@@ -9,14 +9,14 @@ class FolhaDePaga extends Model
 {
     use HasFactory;
 
-    protected $table = 'folhadepaga'; // deve ser o mesmo nome da tabela no BD
+    protected $table = 'folhadepaga';
 
     protected $fillable = [
         'funcionario_id',
+        'data_pagamento',
         'salario_bruto',
         'descontos',
-        'salario_liquido',
-        'data_pagamento'
+        'salario_liquido'
     ];
 
     public function funcionario()

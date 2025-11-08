@@ -7,55 +7,36 @@ use Illuminate\Http\Request;
 
 class CargoController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         $cargos = Cargo::all();
-        return view('cargo.index', compact('cargos'));
+        return view('cargos.index', compact('cargos'));
     }
 
-    public function create()
-    {
-        return view('cargo.create');
+    public function create() {
+        return view('cargos.create');
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'salario' => 'required|numeric|min:0',
+            'nome' => 'required',
+            'salario_base' => 'required|numeric',
+            'nivel_acesso' => 'required'
         ]);
-
-        Cargo::create([
-            'nome' => $request->nome,
-            'salario' => $request->salario,
-        ]);
-
-        return redirect()->route('cargo.index')->with('success', 'Cargo criado com sucesso!');
+        Cargo::create($request->all());
+        return redirect()->route('cargos.index')->with('success', 'Cargo criado!');
     }
 
-    public function edit(Cargo $cargo)
-    {
-        return view('cargo.edit', compact('cargo'));
+    public function edit(Cargo $cargo) {
+        return view('cargos.edit', compact('cargo'));
     }
 
-    public function update(Request $request, Cargo $cargo)
-    {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'salario' => 'required|numeric|min:0',
-        ]);
-
-        $cargo->update([
-            'nome' => $request->nome,
-            'salario' => $request->salario,
-        ]);
-
-        return redirect()->route('cargo.index')->with('success', 'Cargo atualizado com sucesso!');
+    public function update(Request $request, Cargo $cargo) {
+        $cargo->update($request->all());
+        return redirect()->route('cargos.index')->with('success', 'Cargo atualizado!');
     }
 
-    public function destroy(Cargo $cargo)
-    {
+    public function destroy(Cargo $cargo) {
         $cargo->delete();
-        return redirect()->route('cargo.index')->with('success', 'Cargo deletado com sucesso!');
+        return redirect()->route('cargos.index')->with('success', 'Cargo excluído!');
     }
 }
