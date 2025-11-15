@@ -13,11 +13,17 @@ class Funcionario extends Model
         'nome',
         'email',
         'cargo_id',
-        'salario'
+        'departamento_id',
+        'salario',
     ];
 
     public function cargo()
     {
         return $this->belongsTo(Cargo::class);
+    }
+
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class);
     }
 }

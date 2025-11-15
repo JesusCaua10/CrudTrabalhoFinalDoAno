@@ -1,23 +1,25 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Funcionario;
 use App\Models\Cargo;
+use App\Models\Departamento;
 use Illuminate\Http\Request;
 
 class FuncionarioController extends Controller
 {
     public function index()
     {
-        $funcionarios = Funcionario::with('cargo')->get();
+        $funcionarios = Funcionario::with(['cargo', 'departamento'])->get();
         return view('funcionarios.index', compact('funcionarios'));
     }
 
     public function create()
     {
         $cargos = Cargo::all();
-        return view('funcionarios.create', compact('cargos'));
+        $departamentos = Departamento::all();
+
+        return view('funcionarios.create', compact('cargos', 'departamentos'));
     }
 
     public function store(Request $request)
@@ -26,19 +28,18 @@ class FuncionarioController extends Controller
             'nome' => 'required|string|max:150',
             'email' => 'required|email|unique:funcionarios,email',
             'cargo_id' => 'required|exists:cargos,id',
+            'departamento_id' => 'nullable|exists:departamentos,id',
         ]);
 
-        // Buscar o cargo selecionado
-        $cargo = \App\Models\Cargo::find($request->cargo_id);
-
-        // Caso o cargo não tenha salário definido, usar 0
+        // Buscar salário do cargo
+        $cargo = Cargo::find($request->cargo_id);
         $salarioCargo = $cargo ? $cargo->salario_base : 0;
 
-        // Criar o funcionário com o salário do cargo
         Funcionario::create([
             'nome' => $request->nome,
             'email' => $request->email,
             'cargo_id' => $request->cargo_id,
+            'departamento_id' => $request->departamento_id,
             'salario' => $salarioCargo,
         ]);
 
@@ -48,7 +49,9 @@ class FuncionarioController extends Controller
     public function edit(Funcionario $funcionario)
     {
         $cargos = Cargo::all();
-        return view('funcionarios.edit', compact('funcionario', 'cargos'));
+        $departamentos = Departamento::all();
+
+        return view('funcionarios.edit', compact('funcionario', 'cargos', 'departamentos'));
     }
 
     public function update(Request $request, Funcionario $funcionario)
@@ -57,15 +60,17 @@ class FuncionarioController extends Controller
             'nome' => 'required|string|max:150',
             'email' => 'required|email|unique:funcionarios,email,' . $funcionario->id,
             'cargo_id' => 'required|exists:cargos,id',
+            'departamento_id' => 'nullable|exists:departamentos,id',
         ]);
 
-        $cargo = \App\Models\Cargo::find($request->cargo_id);
+        $cargo = Cargo::find($request->cargo_id);
         $salarioCargo = $cargo ? $cargo->salario_base : 0;
 
         $funcionario->update([
             'nome' => $request->nome,
             'email' => $request->email,
             'cargo_id' => $request->cargo_id,
+            'departamento_id' => $request->departamento_id,
             'salario' => $salarioCargo,
         ]);
 

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->decimal('salario', 10, 2)->nullable();
             $table->unsignedBigInteger('cargo_id');
+            $table->unsignedBigInteger('departamento_id')->nullable();
             $table->date('data_admissao')->nullable();
             $table->timestamps();
 

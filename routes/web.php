@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\FolhaDePagaController;
+use App\Http\Controllers\DepartamentoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,3 +26,4 @@ require __DIR__.'/auth.php';
 Route::resource('cargos', CargoController::class)->middleware(['auth']);;
 Route::resource('funcionarios', FuncionarioController::class)->middleware(['auth']);;
 Route::resource('folha', FolhaDePagaController::class)->middleware(['auth']);;
+Route::resource('departamentos', DepartamentoController::class)->middleware(['auth']);
