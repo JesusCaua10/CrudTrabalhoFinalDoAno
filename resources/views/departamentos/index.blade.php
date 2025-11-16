@@ -1,45 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Departamentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            Departamentos
-        </h2>
+        <h2>Departamentos</h2>
     </x-slot>
 
-    <div class="p-6">
+    <div>
 
-        <a href="{{ route('departamentos.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded">
+        <a href="{{ route('departamentos.create') }}">
             Novo Departamento
         </a>
 
-        <table class="w-full mt-4 border">
+        <table>
             <thead>
-                <tr class="bg-gray-200">
-                    <th class="p-2 border">ID</th>
-                    <th class="p-2 border">Nome</th>
-                    <th class="p-2 border">Ações</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
 
             <tbody>
                 @foreach ($departamentos as $departamento)
                     <tr>
-                        <td class="p-2 border">{{ $departamento->id }}</td>
-                        <td class="p-2 border">{{ $departamento->nome }}</td>
-                        <td class="p-2 border">
-                            <a href="{{ route('departamentos.edit', $departamento->id) }}"
-                               class="bg-yellow-500 text-white px-2 py-1 rounded">
+                        <td>{{ $departamento->id }}</td>
+                        <td>{{ $departamento->nome }}</td>
+                        <td>
+                            <a href="{{ route('departamentos.edit', $departamento->id) }}">
                                 Editar
                             </a>
 
                             <form action="{{ route('departamentos.destroy', $departamento->id) }}"
-                                  method="POST"
-                                  style="display:inline-block">
+                                  method="POST">
                                 @csrf
                                 @method('DELETE')
 
-                                <button class="bg-red-600 text-white px-2 py-1 rounded"
-                                        onclick="return confirm('Deseja apagar?')">
+                                <button onclick="return confirm('Deseja apagar?')">
                                     Excluir
                                 </button>
                             </form>

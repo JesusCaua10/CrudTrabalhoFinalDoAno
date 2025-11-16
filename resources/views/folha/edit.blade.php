@@ -1,32 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Folha de Pagamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
 <x-app-layout>
-<div class="p-6 max-w-md mx-auto">
-    <h2 class="text-xl font-bold mb-4">Editar Folha de Pagamento</h2>
-    <form action="{{ route('folha.update', $folha) }}" method="POST" class="space-y-3">
-        @csrf @method('PUT')
-        <select name="funcionario_id" class="w-full border p-2 rounded" id="funcionarioSelectEdit">
-            @foreach ($funcionarios as $f)
-                <option value="{{ $f->id }}" data-salario="{{ $f->salario }}" @if($f->id == $folha->funcionario_id) selected @endif>
-                    {{ $f->nome }}
-                </option>
-            @endforeach
-        </select>
 
-        <input name="data_pagamento" type="date" class="w-full border p-2 rounded" value="{{ $folha->data_pagamento }}" required>
+    <div>
+        <h2>Editar Folha de Pagamento</h2>
 
-        <input name="salario_bruto" id="salarioInputEdit" class="w-full border p-2 rounded" value="{{ $folha->salario_bruto }}" readonly required>
-        <input name="descontos" placeholder="Descontos" class="w-full border p-2 rounded" value="{{ $folha->descontos }}" required>
+        <form action="{{ route('folha.update', $folha) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">Atualizar</button>
-    </form>
-</div>
+            <select name="funcionario_id" id="funcionarioSelectEdit">
+                @foreach ($funcionarios as $f)
+                    <option value="{{ $f->id }}" data-salario="{{ $f->salario }}"
+                        @if($f->id == $folha->funcionario_id) selected @endif>
+                        {{ $f->nome }}
+                    </option>
+                @endforeach
+            </select>
 
-<script>
-    const selectEdit = document.getElementById('funcionarioSelectEdit');
-    const salarioInputEdit = document.getElementById('salarioInputEdit');
+            <input type="date" name="data_pagamento" value="{{ $folha->data_pagamento }}" required>
 
-    selectEdit.addEventListener('change', function() {
-        const salario = selectEdit.selectedOptions[0].dataset.salario || 0;
-        salarioInputEdit.value = salario;
-    });
-</script>
+            <input name="salario_bruto" id="salarioInputEdit" value="{{ $folha->salario_bruto }}" readonly required>
+
+            <input name="descontos" value="{{ $folha->descontos }}" required>
+
+            <button>Atualizar</button>
+        </form>
+    </div>
+
+    <script>
+        const selectEdit = document.getElementById('funcionarioSelectEdit');
+        const salarioInputEdit = document.getElementById('salarioInputEdit');
+
+        selectEdit.addEventListener('change', function() {
+            const salario = selectEdit.selectedOptions[0].dataset.salario || 0;
+            salarioInputEdit.value = salario;
+        });
+    </script>
+
 </x-app-layout>
+</body>
+</html>

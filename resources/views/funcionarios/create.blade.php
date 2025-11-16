@@ -1,48 +1,38 @@
 <x-app-layout>
-<div class="p-6 max-w-lg mx-auto">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">Novo Funcionário</h2>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold text-gray-800">Novo Funcionário</h2>
+    </x-slot>
 
-    <form action="{{ route('funcionarios.store') }}" method="POST" class="space-y-4 bg-white p-6 rounded-xl shadow">
-        @csrf
+    <div class="p-6 max-w-lg mx-auto">
+        <form action="{{ route('funcionarios.store') }}" method="POST" class="space-y-4 bg-white p-6 rounded-xl shadow">
+            @csrf
+            <x-input name="nome" placeholder="Nome completo" />
+            <x-input name="email" type="email" placeholder="Email" />
 
-        <input name="nome" placeholder="Nome completo" 
-               class="w-full border p-3 rounded-lg" required>
+            <x-select name="cargo_id" id="cargo_id">
+                <option value="">Selecione o cargo</option>
+                @foreach ($cargos as $cargo)
+                    <option value="{{ $cargo->id }}" data-salario="{{ $cargo->salario_base }}">{{ $cargo->nome }}</option>
+                @endforeach
+            </x-select>
 
-        <input name="email" type="email" placeholder="Email" 
-               class="w-full border p-3 rounded-lg" required>
+            <x-select name="departamento_id">
+                <option value="">Selecione o departamento</option>
+                @foreach($departamentos as $d)
+                    <option value="{{ $d->id }}">{{ $d->nome }}</option>
+                @endforeach
+            </x-select>
 
-        <!-- CARGO -->
-        <select name="cargo_id" id="cargo_id" 
-                class="w-full border p-3 rounded-lg" required>
-            <option value="">Selecione o cargo</option>
-            @foreach ($cargos as $cargo)
-                <option value="{{ $cargo->id }}" data-salario="{{ $cargo->salario_base }}">
-                    {{ $cargo->nome }}
-                </option>
-            @endforeach
-        </select>
+            <x-input id="salario_display" placeholder="Salário do cargo" readonly />
 
-        <!-- DEPARTAMENTO -->
-        <select name="departamento_id" class="w-full border p-3 rounded-lg" required>
-            <option value="">Selecione o departamento</option>
-            @foreach($departamentos as $d)
-                <option value="{{ $d->id }}">{{ $d->nome }}</option>
-            @endforeach
-        </select>
+            <x-button color="blue" full="true">Salvar</x-button>
+        </form>
+    </div>
 
-        <input id="salario_display" placeholder="Salário do cargo" 
-               class="w-full border p-3 rounded-lg bg-gray-100" readonly>
-
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full shadow">
-            Salvar
-        </button>
-    </form>
-</div>
-
-<script>
-document.getElementById('cargo_id').addEventListener('change', function() {
-    const salario = this.options[this.selectedIndex].getAttribute('data-salario');
-    document.getElementById('salario_display').value = salario ? 'R$ ' + salario : '';
-});
-</script>
+    <script>
+        document.getElementById('cargo_id').addEventListener('change', function() {
+            const salario = this.options[this.selectedIndex].getAttribute('data-salario');
+            document.getElementById('salario_display').value = salario ? 'R$ ' + salario : '';
+        });
+    </script>
 </x-app-layout>
