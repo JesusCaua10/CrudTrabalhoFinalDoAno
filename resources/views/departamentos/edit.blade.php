@@ -1,29 +1,15 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Departamento</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
 <x-app-layout>
     <x-slot name="header">
-        <h2>Editar Departamento</h2>
+        <h2 class="text-xl font-semibold text-white">Editar Departamento</h2>
     </x-slot>
 
-    <div>
-        <form action="{{ route('departamentos.update', $departamento->id) }}" method="POST">
+    <div class="p-6 max-w-lg mx-auto">
+        <form action="{{ route('departamentos.update', $departamento) }}" method="POST" class="space-y-4 bg-gray-800 p-6 rounded-xl shadow">
             @csrf
             @method('PUT')
+            <x-input name="nome" value="{{ $departamento->nome }}" placeholder="Nome do departamento" required />
 
-            <div>
-                <label>Nome</label>
-                <input type="text" name="nome" value="{{ $departamento->nome }}" required>
-            </div>
-
-            <button>
-                Atualizar
-            </button>
+            <x-button type="submit" color="blue" full="true">Atualizar</x-button>
         </form>
     </div>
 </x-app-layout>

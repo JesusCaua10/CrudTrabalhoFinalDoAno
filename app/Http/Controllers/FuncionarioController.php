@@ -24,26 +24,26 @@ class FuncionarioController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nome' => 'required|string|max:150',
-            'email' => 'required|email|unique:funcionarios,email',
-            'cargo_id' => 'required|exists:cargos,id',
-            'departamento_id' => 'nullable|exists:departamentos,id',
-        ]);
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'email' => 'required|email|unique:funcionarios,email',
+        'cargo_id' => 'required|exists:cargos,id',
+        'departamento_id' => 'required|exists:departamentos,id',
+    ]);
 
-        // Buscar salário do cargo
-        $cargo = Cargo::find($request->cargo_id);
-        $salarioCargo = $cargo ? $cargo->salario_base : 0;
+    // Pega o salário do cargo selecionado
+    $cargo = Cargo::find($request->cargo_id);
+    $salarioCargo = $cargo ? $cargo->salario_base : 0;
 
-        Funcionario::create([
-            'nome' => $request->nome,
-            'email' => $request->email,
-            'cargo_id' => $request->cargo_id,
-            'departamento_id' => $request->departamento_id,
-            'salario' => $salarioCargo,
-        ]);
+    Funcionario::create([
+        'nome' => $request->nome,
+        'email' => $request->email,
+        'cargo_id' => $request->cargo_id,
+        'departamento_id' => $request->departamento_id,
+        'salario' => $salarioCargo,  // <-- aqui estava faltando
+    ]);
 
-        return redirect()->route('funcionarios.index')->with('success', 'Funcionário criado com sucesso!');
+    return redirect()->route('funcionarios.index')->with('success', 'Funcionário criado com sucesso!');
     }
 
     public function edit(Funcionario $funcionario)

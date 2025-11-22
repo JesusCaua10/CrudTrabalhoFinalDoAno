@@ -1,46 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Cargos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
 <x-app-layout>
-    <div>
-        <h1>Cargos</h1>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold text-white">Cargos</h2>
+    </x-slot>
+    <div class="p-6">
 
-        <a href="{{ route('cargos.create') }}">+ Novo Cargo</a>
+        <div class="flex justify-between items-center mb-6">
+            <x-nav-button href="{{ route('cargos.create') }}" color="blue">
+                Novo Cargo
+            </x-nav-button>
+        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Salário Base</th>
-                    <th>Nível de Acesso</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+        <x-card>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-700">
+                    <thead class="bg-gray-800">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Nome</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Salário Base</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Nível de Acesso</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-gray-900 divide-y divide-gray-700">
+                        @foreach ($cargos as $cargo)
+                            <tr>
+                                <td class="px-6 py-4 text-gray-100">{{ $cargo->nome }}</td>
+                                <td class="px-6 py-4 text-gray-100">R$ {{ number_format($cargo->salario_base, 2, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-gray-100">{{ $cargo->nivel_acesso }}</td>
+                                <td class="px-6 py-4 flex space-x-2">
+                                    <x-nav-button href="{{ route('cargos.edit', $cargo) }}" color="green">
+                                        Editar
+                                    </x-nav-button>
+                                    <form action="{{ route('cargos.destroy', $cargo) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-danger-button type="submit">Excluir</x-danger-button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-            <tbody>
-                @foreach ($cargos as $cargo)
-                    <tr>
-                        <td>{{ $cargo->nome }}</td>
-                        <td>R$ {{ number_format($cargo->salario_base, 2, ',', '.') }}</td>
-                        <td>{{ $cargo->nivel_acesso }}</td>
+            @if($cargos->isEmpty())
+                <p class="text-gray-400 mt-4">Nenhum cargo cadastrado.</p>
+            @endif
+        </x-card>
 
-                        <td>
-                            <a href="{{ route('cargos.edit', $cargo) }}">Editar</a>
-
-                            <form action="{{ route('cargos.destroy', $cargo) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button>Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
     </div>
 </x-app-layout>

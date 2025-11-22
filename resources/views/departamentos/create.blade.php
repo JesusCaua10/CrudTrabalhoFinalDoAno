@@ -1,36 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Novo Departamento</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-
 <x-app-layout>
     <x-slot name="header">
-        <h2>
-            Novo Departamento
-        </h2>
+        <h2 class="text-xl font-semibold text-white">Novo Departamento</h2>
     </x-slot>
 
-    <div>
-        <form action="{{ route('departamentos.store') }}" method="POST">
+    <div class="p-6 max-w-lg mx-auto">
+        <form action="{{ route('departamentos.store') }}" method="POST" class="space-y-4 bg-gray-800 p-6 rounded-xl shadow">
             @csrf
+            <x-input name="nome" placeholder="Nome do departamento" required />
 
-            <div>
-                <label>Nome</label>
-                <input
-                    type="text"
-                    name="nome"
-                    required
-                >
-            </div>
-
-            <button type="submit">Salvar</button>
+            <x-button type="submit" color="blue" full="true">Salvar</x-button>
         </form>
     </div>
 </x-app-layout>
-
-</body>
-</html>
