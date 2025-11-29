@@ -2,6 +2,7 @@
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-white">Funcionários</h2>
     </x-slot>
+
     <div class="p-6">
 
         <div class="flex justify-between items-center mb-6">
@@ -20,6 +21,7 @@
                             <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Cargo</th>
                             <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Departamento</th>
                             <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Salário</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Data de Admissão</th>
                             <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Ações</th>
                         </tr>
                     </thead>
@@ -30,12 +32,18 @@
                                 <td class="px-6 py-4 text-gray-100">{{ $funcionario->email }}</td>
                                 <td class="px-6 py-4 text-gray-100">{{ $funcionario->cargo->nome ?? '-' }}</td>
                                 <td class="px-6 py-4 text-gray-100">{{ $funcionario->departamento->nome ?? '-' }}</td>
-                                <td class="px-6 py-4 text-gray-100">R$ {{ number_format($funcionario->salario, 2, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-gray-100">
+                                    R$ {{ number_format($funcionario->cargo->salario_base ?? $funcionario->salario, 2, ',', '.') }}
+                                </td>
+                                <td class="px-6 py-4 text-gray-100">
+                                    {{ $funcionario->data_admissao ? \Carbon\Carbon::parse($funcionario->data_admissao)->format('d/m/Y') : '-' }}
+                                </td>
                                 <td class="px-6 py-4 flex space-x-2">
                                     <x-nav-button href="{{ route('funcionarios.edit', $funcionario) }}" color="green">
                                         Editar
                                     </x-nav-button>
-                                    <form action="{{ route('funcionarios.destroy', $funcionario) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                                    <form action="{{ route('funcionarios.destroy', $funcionario) }}" method="POST"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir?')">
                                         @csrf
                                         @method('DELETE')
                                         <x-danger-button type="submit">Excluir</x-danger-button>

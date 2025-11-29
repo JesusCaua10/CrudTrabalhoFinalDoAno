@@ -26,7 +26,7 @@
                     </thead>
 
                     <tbody class="bg-gray-900 divide-y divide-gray-700">
-                        @foreach ($ferias as $f)
+                        @foreach ($feria as $f)
                             <tr>
                                 <td class="px-6 py-4 text-gray-100">{{ $f->funcionario->nome }}</td>
                                 <td class="px-6 py-4 text-gray-100">{{ $f->data_inicio }}</td>
@@ -57,13 +57,13 @@
                 </table>
             </div>
 
-            @if($ferias->isEmpty())
+            @if($feria->isEmpty())
                 <p class="text-gray-400 mt-4">Nenhum registro de férias cadastrado.</p>
             @endif
         </x-card>
 
         <div class="mt-4">
-            {{ $ferias->links() }}
+            {{ $feria->links() }}
         </div>
 
     </div>

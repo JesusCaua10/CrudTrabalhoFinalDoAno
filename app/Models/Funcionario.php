@@ -13,6 +13,7 @@ class Funcionario extends Model
         'nome',
         'email',
         'cargo_id',
+        'data_admissao',
         'departamento_id',
         'salario',
     ];

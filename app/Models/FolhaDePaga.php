@@ -16,11 +16,24 @@ class FolhaDePaga extends Model
         'data_pagamento',
         'salario_bruto',
         'descontos',
-        'salario_liquido'
+        'salario_liquido',
     ];
 
+    // Relação com funcionário
     public function funcionario()
     {
         return $this->belongsTo(Funcionario::class);
+    }
+
+    // Evento antes de criar o registro
+    protected static function booted()
+    {
+        static::creating(function ($folha) {
+            $folha->salario_liquido = $folha->salario_bruto - $folha->descontos;
+        });
+
+        static::updating(function ($folha) {
+            $folha->salario_liquido = $folha->salario_bruto - $folha->descontos;
+        });
     }
 }

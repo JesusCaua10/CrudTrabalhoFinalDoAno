@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FolhaRequest;
 use App\Models\FolhaDePaga;
 use App\Models\Funcionario;
-use Illuminate\Http\Request;
 
 class FolhaDePagaController extends Controller
 {
     public function index()
     {
-        $folhas = FolhaDePaga::with('funcionario')->get();
+        $folhas = FolhaDePaga::with('funcionario')->paginate(10);
         return view('folha.index', compact('folhas'));
     }
 
@@ -20,28 +20,10 @@ class FolhaDePagaController extends Controller
         return view('folha.create', compact('funcionarios'));
     }
 
-    public function store(Request $request)
+    public function store(FolhaRequest $request)
     {
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'data_pagamento' => 'required|date',
-            'descontos' => 'required|numeric'
-        ]);
-
-        $funcionario = Funcionario::find($request->funcionario_id);
-
-        $salario_bruto = $funcionario->salario;
-        $salario_liquido = $salario_bruto - $request->descontos;
-
-        FolhaDePaga::create([
-            'funcionario_id' => $request->funcionario_id,
-            'data_pagamento' => $request->data_pagamento,
-            'salario_bruto' => $salario_bruto,
-            'descontos' => $request->descontos,
-            'salario_liquido' => $salario_liquido
-        ]);
-
-        return redirect()->route('folha.index')->with('success', 'Folha registrada!');
+        FolhaDePaga::create($request->validated());
+        return redirect()->route('folha.index')->with('success', 'Folha de pagamento criada com sucesso!');
     }
 
     public function edit(FolhaDePaga $folha)
@@ -50,33 +32,15 @@ class FolhaDePagaController extends Controller
         return view('folha.edit', compact('folha', 'funcionarios'));
     }
 
-    public function update(Request $request, FolhaDePaga $folha)
+    public function update(FolhaRequest $request, FolhaDePaga $folha)
     {
-        $request->validate([
-            'funcionario_id' => 'required|exists:funcionarios,id',
-            'data_pagamento' => 'required|date',
-            'descontos' => 'required|numeric'
-        ]);
-
-        $funcionario = Funcionario::find($request->funcionario_id);
-
-        $salario_bruto = $funcionario->salario;
-        $salario_liquido = $salario_bruto - $request->descontos;
-
-        $folha->update([
-            'funcionario_id' => $request->funcionario_id,
-            'data_pagamento' => $request->data_pagamento,
-            'salario_bruto' => $salario_bruto,
-            'descontos' => $request->descontos,
-            'salario_liquido' => $salario_liquido
-        ]);
-
-        return redirect()->route('folha.index')->with('success', 'Folha atualizada!');
+        $folha->update($request->validated());
+        return redirect()->route('folha.index')->with('success', 'Folha de pagamento atualizada com sucesso!');
     }
 
     public function destroy(FolhaDePaga $folha)
     {
         $folha->delete();
-        return redirect()->route('folha.index')->with('success', 'Folha excluída!');
+        return redirect()->route('folha.index')->with('success', 'Folha de pagamento excluída com sucesso!');
     }
 }
