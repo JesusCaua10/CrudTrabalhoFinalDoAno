@@ -6,7 +6,7 @@
 
         <div class="flex justify-between items-center mb-6">
             <x-nav-button href="{{ route('cargos.create') }}" color="blue">
-                Novo Cargo
+                + Novo Cargo
             </x-nav-button>
         </div>
 

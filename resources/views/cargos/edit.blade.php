@@ -1,36 +1,24 @@
 <x-app-layout>
-    <div class="p-6">
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold text-white">Editar Cargo</h2>
+    </x-slot>
 
-        <h2 class="text-2xl font-bold text-white mb-6">Editar Cargo</h2>
+    <div class="p-6 max-w-lg mx-auto">
+        <form action="{{ route('cargos.update', $cargo) }}" method="POST" class="space-y-4 bg-gray-800 p-6 rounded-xl shadow">
+            @csrf
+            @method('PUT')
 
-        <x-card>
-            <form action="{{ route('cargos.update', $cargo) }}" method="POST" class="space-y-4">
-                @csrf
-                @method('PUT')
+            <input name="nome"value="{{ old('nome', $cargo->nome) }}"class="w-full px-4 py-2 rounded bg-gray-700 text-white"required>
 
-                <div>
-                    <x-input-label for="nome" value="Nome" class="text-gray-300" />
-                    <x-text-input id="nome" name="nome" type="text" value="{{ old('nome', $cargo->nome) }}" class="mt-1 block w-full" required />
-                    <x-input-error :messages="$errors->get('nome')" class="mt-1" />
-                </div>
+            <input name="salario_base"type="number"step="0.01"value="{{ old('salario_base', $cargo->salario_base) }}"class="w-full px-4 py-2 rounded bg-gray-700 text-white"required>
 
-                <div>
-                    <x-input-label for="salario_base" value="Salário Base" class="text-gray-300" />
-                    <x-text-input id="salario_base" name="salario_base" type="number" step="0.01" value="{{ old('salario_base', $cargo->salario_base) }}" class="mt-1 block w-full" required />
-                    <x-input-error :messages="$errors->get('salario_base')" class="mt-1" />
-                </div>
+            <input name="nivel_acesso"value="{{ old('nivel_acesso', $cargo->nivel_acesso) }}"class="w-full px-4 py-2 rounded bg-gray-700 text-white"required>
 
-                <div>
-                    <x-input-label for="nivel_acesso" value="Nível de Acesso" class="text-gray-300" />
-                    <x-text-input id="nivel_acesso" name="nivel_acesso" type="text" value="{{ old('nivel_acesso', $cargo->nivel_acesso) }}" class="mt-1 block w-full" required />
-                    <x-input-error :messages="$errors->get('nivel_acesso')" class="mt-1" />
-                </div>
+            <div class="flex justify-end mt-4">
+                <x-nav-button href="{{ route('cargos.index') }}" color="gray">Voltar</x-nav-button>
+                <x-primary-button type="submit">Atualizar</x-primary-button>
+            </div>
 
-                <div class="flex justify-end mt-4">
-                    <x-primary-button type="submit">Atualizar</x-primary-button>
-                </div>
-            </form>
-        </x-card>
-
+        </form>
     </div>
 </x-app-layout>

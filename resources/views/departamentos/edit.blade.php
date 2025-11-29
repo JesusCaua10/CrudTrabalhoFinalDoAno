@@ -7,9 +7,14 @@
         <form action="{{ route('departamentos.update', $departamento) }}" method="POST" class="space-y-4 bg-gray-800 p-6 rounded-xl shadow">
             @csrf
             @method('PUT')
-            <x-input name="nome" value="{{ $departamento->nome }}" placeholder="Nome do departamento" required />
 
-            <x-button type="submit" color="blue" full="true">Atualizar</x-button>
+            <input name="nome" value="{{ $departamento->nome }}"
+                class="w-full px-4 py-2 rounded bg-gray-700 text-white" required>
+
+            <div class="flex justify-end mt-4">
+                <x-nav-button href="{{ route('departamentos.index') }}" color="gray">Voltar</x-nav-button>
+                <x-primary-button type="submit">Atualizar</x-primary-button>
+            </div>
         </form>
     </div>
 </x-app-layout>

@@ -1,37 +1,25 @@
 <x-app-layout>
-<div class="p-6">
+<div class="p-6 max-w-lg mx-auto">
 
-    <h1 class="text-2xl font-bold mb-4">Registrar Férias</h1>
+    <h1 class="text-2xl font-bold mb-4 text-white">Registrar Férias</h1>
 
-    <form method="POST" action="{{ route('ferias.store') }}">
+    <form method="POST" action="{{ route('ferias.store') }}" class="space-y-4 bg-gray-800 p-6 rounded-xl shadow">
         @csrf
 
-        <div class="mb-4">
-            <x-input-label for="funcionario_id" value="Funcionário" />
-            <select name="funcionario_id" id="funcionario_id" class="w-full border-gray-300 rounded-md">
-                @foreach($funcionarios as $func)
-                    <option value="{{ $func->id }}">{{ $func->nome }}</option>
-                @endforeach
-            </select>
-            <x-input-error :messages="$errors->get('funcionario_id')" />
-        </div>
+        <select name="funcionario_id" class="w-full px-4 py-2 rounded bg-gray-700 text-white" required>
+            @foreach($funcionarios as $func)
+                <option value="{{ $func->id }}">{{ $func->nome }}</option>
+            @endforeach
+        </select>
 
-        <div class="mb-4">
-            <x-input-label for="data_inicio" value="Data de Início" />
-            <x-text-input type="date" name="data_inicio" class="w-full" />
-            <x-input-error :messages="$errors->get('data_inicio')" />
-        </div>
+        <input type="date" name="data_inicio" class="w-full px-4 py-2 rounded bg-gray-700 text-white" required>
 
-        <div class="mb-4">
-            <x-input-label for="data_fim" value="Data de Fim" />
-            <x-text-input type="date" name="data_fim" class="w-full" />
-            <x-input-error :messages="$errors->get('data_fim')" />
-        </div>
+        <input type="date" name="data_fim" class="w-full px-4 py-2 rounded bg-gray-700 text-white" required>
 
-        <x-primary-button>Salvar</x-primary-button>
-        <a href="{{ route('ferias.index') }}" class="ml-2">
-            <x-secondary-button>Voltar</x-secondary-button>
-        </a>
+        <div class="flex justify-end mt-4">
+            <x-nav-button href="{{ route('ferias.index') }}" color="gray">Voltar</x-nav-button>
+            <x-primary-button>Salvar</x-primary-button>
+        </div>
     </form>
 
 </div>

@@ -24,7 +24,10 @@
 
             <input id="salario_display" value="{{ $funcionario->salario }}" readonly class="w-full px-4 py-2 rounded bg-gray-600 text-white">
 
-            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500">Atualizar</button>
+            <div class="flex justify-end mt-4">
+                <x-nav-button href="{{ route('funcionarios.index') }}" color="gray">Voltar</x-nav-button>
+                <x-primary-button type="submit">Atualizar</x-primary-button>
+            </div>
         </form>
     </div>
 
